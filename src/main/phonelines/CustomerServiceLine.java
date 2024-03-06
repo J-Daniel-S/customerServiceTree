@@ -18,6 +18,18 @@ public class CustomerServiceLine {
 
 	private CustomerServiceLine() {
 	}
+	
+	public static void executeDailySchedule(AVLTree tree) {
+		CustomerServiceLine.repLogsOn(tree, 2000, "jeff");
+		CustomerServiceLine.repLogsOn(tree, 7500, "jordan");
+		CustomerServiceLine.repLogsOn(tree, 9500, "morgan");
+		CustomerServiceLine.repLogsOn(tree, 20000, "kevin");
+		CustomerServiceLine.repLogsOn(tree, 22000, "regis");
+		CustomerServiceLine.repLogsOn(tree, 28000, "stephen");
+		CustomerServiceLine.repLogsOn(tree, 43000, "reuben");
+		CustomerServiceLine.repLogsOn(tree, 48000, "reginald");
+		CustomerServiceLine.repLogsOn(tree, 50000, "dingus");
+	}
 
 	public static synchronized void answer(AVLTree tree, String name) {
 
@@ -53,18 +65,19 @@ public class CustomerServiceLine {
 		return future;
 	}
 
-	public static ScheduledFuture<?> moreCallers(AVLTree tree) {
+	public static void moreCallers(AVLTree tree) {
 		Runnable callIn = () -> {
-			int key = numberCaller(tree);
+			int key = callerPosition(tree);
 			tree.insert(key);
 			System.out.println("New customer calling in - assigning id");
 		};
 
-		return executor.scheduleAtFixedRate(callIn, 1, 2, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(callIn, 1, 2, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(callIn, 2, 2, TimeUnit.SECONDS);
 
 	}
 
-	public static int numberCaller(AVLTree tree) {
+	public static int callerPosition(AVLTree tree) {
 		int key;
 		if (left) {
 			key = tree.findMin() - 1;

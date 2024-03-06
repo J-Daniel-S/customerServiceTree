@@ -28,7 +28,7 @@ public abstract class BSTRecursive {
 		return root;
 	}
 	
-	public void setRoot(Node root) {
+	public synchronized void setRoot(Node root) {
 		this.root = root;
 	}
 
