@@ -10,8 +10,41 @@ public abstract class BSTRecursive {
 		return searchNode(key, root);
 	}
 	
-	public Node getRoot() {
+	public synchronized int findMin() {
+		Node node = null;
+		if (root != null)
+			node = minNode(root.getKey(), root.getLeft());
+		return node == null || root == null ? 0 : node.getKey();
+	}
+
+	public synchronized int findMax() {
+		Node node = null;
+		if (root != null)
+			node = maxNode(root.getKey(), root.getRight());
+		return node  == null || root == null ? 0 : node.getKey();
+	}
+	
+	public synchronized Node getRoot() {
 		return root;
+	}
+	
+	// traverse left until you can't anymore then return that key
+	private Node minNode(int key, Node node) {
+		if (node == null) {
+			return new Node(key);
+		} 
+		
+		return minNode(node.getKey(), node.getLeft());
+		
+	}
+
+	// traverse right until you can't anymore then return that key
+	private Node maxNode(int key, Node node) {
+		if (node == null) {
+			return new Node(key);
+		}
+		
+		return maxNode(node.getKey(), node.getRight());
 	}
 
 	private Node searchNode(int key, Node node) {
@@ -28,7 +61,7 @@ public abstract class BSTRecursive {
 		}
 	}
 
-	public void insert(int key) {
+	public synchronized void insert(int key) {
 		root = insertNode(key, root);
 	}
 
@@ -51,7 +84,7 @@ public abstract class BSTRecursive {
 		return node;
 	}
 
-	public void delete(int key) {
+	public synchronized void delete(int key) {
 		root = deleteNode(key, root);
 	}
 

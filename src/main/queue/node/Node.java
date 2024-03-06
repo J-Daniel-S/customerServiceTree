@@ -1,19 +1,24 @@
 package main.queue.node;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Node {
 	
 	private int key, height;
 	private Node right, left;
+	private long id;
 	
 	public Node(int data) {
 		key = data;
 		left = right = null;
+		id = ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, Long.MAX_VALUE);
 	}
 	
 	public Node(Node node) {
 		key = node.getKey();
 		left = node.getLeft();
 		right = node.getRight();
+		id = ThreadLocalRandom.current().nextLong();
 	}
 
 	public int getKey() {
@@ -46,6 +51,10 @@ public class Node {
 
 	public void setRight(Node right) {
 		this.right = right;
+	}
+	
+	public long getId() {
+		return id;
 	}
 
 	@Override

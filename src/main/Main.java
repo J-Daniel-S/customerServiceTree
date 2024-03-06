@@ -1,25 +1,42 @@
 package main;
 
-import java.util.Random;
-import java.util.stream.Stream;
+import java.util.concurrent.ScheduledFuture;
 
 import main.phonelines.CustomerServiceLine;
 import main.queue.AVLTree;
+import main.reps.ServiceRep;
+import main.supervisor.Supervisor;
 
 public class Main {
 	
 	public static void main(String[] args) {
 		AVLTree tree = new AVLTree();
 		
-		Stream.generate(() -> new Random().nextInt(30)).limit(20).distinct().forEach(tree::insert);
-		
-		System.out.println("customer" + tree.getRoot().getKey() + " - first in line");
-		
-		CustomerServiceLine.startShift(tree);
-		
-		
-		
+		System.out.println("CUSTOMER SERVICE LINES OPEN");
+		CustomerServiceLine.moreCallers(tree);
 
+		bringReps(tree);
+
+	}
+
+	private static void bringReps(AVLTree tree) {
+		ServiceRep jeff = new ServiceRep(tree, "jeff");
+		try {
+			Thread.sleep(5000);
+			ServiceRep jordan = new ServiceRep(tree, "jordan");
+			Supervisor.sendHome(jordan);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		try {
+			Thread.sleep(10000);
+			ServiceRep morgan = new ServiceRep(tree, "morgan");
+			Supervisor.sendHome(morgan);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Supervisor.sendHome(jeff);
 	}
 
 
