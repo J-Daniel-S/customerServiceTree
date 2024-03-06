@@ -1,13 +1,15 @@
 package main.phonelines;
 
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import main.queue.AVLTree;
+import main.reps.ServiceRep;
+import main.supervisor.Supervisor;
 
 public class CustomerServiceLine {
 
@@ -26,12 +28,11 @@ public class CustomerServiceLine {
 			tree.delete(root);
 
 			if (tree.getRoot() != null)
-				System.out.println("customer" + callerId + " answered by " + name + " - " + "customer" + callerId
-						+ " next in line - position- " + root);
+				System.out.println("-\n" + name.toUpperCase() + " answers customer in position " + root + " - ID - " + callerId + "\n-");
 			else
-				System.out.println(name + " has answered customer" + callerId + " - position- " + root);
+				System.out.println("-\n" + name + " has answered customer" + callerId + "-\n-");
 		} else {
-			System.out.println("No customers in queue - " + name + " standing by for callers");
+			System.out.println("-\nNo customers in queue - " + name + " standing by for callers\n-");
 		}
 
 	}
@@ -59,7 +60,7 @@ public class CustomerServiceLine {
 			System.out.println("New customer calling in - assigning id");
 		};
 
-		return executor.scheduleAtFixedRate(callIn, 1, 3, TimeUnit.SECONDS);
+		return executor.scheduleAtFixedRate(callIn, 1, 2, TimeUnit.SECONDS);
 
 	}
 
@@ -77,8 +78,18 @@ public class CustomerServiceLine {
 	}
 
 	public static void openLines(AVLTree tree) {
-		Stream.generate(() -> new Random().nextInt(30)).limit(20).distinct().forEach(tree::insert);
+		Stream.generate(() -> ThreadLocalRandom.current().nextInt(30)).limit(20).distinct().forEach(tree::insert);
 
+	}
+	
+	public static void repLogsOn(AVLTree tree, int delay, String name) {
+		try {
+			Thread.sleep(delay);
+			ServiceRep rep = new ServiceRep(tree, name);
+			Supervisor.sendHome(rep);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

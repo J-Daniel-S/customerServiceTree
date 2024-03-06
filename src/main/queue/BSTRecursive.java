@@ -3,7 +3,7 @@ package main.queue;
 import main.queue.node.Node;
 
 public abstract class BSTRecursive {
-
+	
 	private Node root;
 
 	public Node searchNode(int key) {
@@ -28,6 +28,10 @@ public abstract class BSTRecursive {
 		return root;
 	}
 	
+	public void setRoot(Node root) {
+		this.root = root;
+	}
+
 	// traverse left until you can't anymore then return that key
 	private Node minNode(int key, Node node) {
 		if (node == null) {

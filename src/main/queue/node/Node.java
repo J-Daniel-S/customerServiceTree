@@ -1,7 +1,5 @@
 package main.queue.node;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class Node {
 	
 	private int key, height;
@@ -11,14 +9,14 @@ public class Node {
 	public Node(int data) {
 		key = data;
 		left = right = null;
-		id = ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, Long.MAX_VALUE);
+		id = 0;
 	}
 	
 	public Node(Node node) {
 		key = node.getKey();
 		left = node.getLeft();
 		right = node.getRight();
-		id = ThreadLocalRandom.current().nextLong();
+		id = 0;
 	}
 
 	public int getKey() {
@@ -55,6 +53,10 @@ public class Node {
 	
 	public long getId() {
 		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	@Override

@@ -1,11 +1,7 @@
 package main;
 
-import java.util.concurrent.ScheduledFuture;
-
 import main.phonelines.CustomerServiceLine;
 import main.queue.AVLTree;
-import main.reps.ServiceRep;
-import main.supervisor.Supervisor;
 
 public class Main {
 	
@@ -14,29 +10,22 @@ public class Main {
 		
 		System.out.println("CUSTOMER SERVICE LINES OPEN");
 		CustomerServiceLine.moreCallers(tree);
+		CustomerServiceLine.moreCallers(tree);
 
 		bringReps(tree);
 
 	}
 
 	private static void bringReps(AVLTree tree) {
-		ServiceRep jeff = new ServiceRep(tree, "jeff");
-		try {
-			Thread.sleep(5000);
-			ServiceRep jordan = new ServiceRep(tree, "jordan");
-			Supervisor.sendHome(jordan);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		try {
-			Thread.sleep(10000);
-			ServiceRep morgan = new ServiceRep(tree, "morgan");
-			Supervisor.sendHome(morgan);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		Supervisor.sendHome(jeff);
+		CustomerServiceLine.repLogsOn(tree, 2000, "jeff");
+		CustomerServiceLine.repLogsOn(tree, 7500, "jordan");
+		CustomerServiceLine.repLogsOn(tree, 9500, "morgan");
+		CustomerServiceLine.repLogsOn(tree, 20000, "kevin");
+		CustomerServiceLine.repLogsOn(tree, 22000, "regis");
+		CustomerServiceLine.repLogsOn(tree, 28000, "stephen");
+		CustomerServiceLine.repLogsOn(tree, 43000, "reuben");
+		CustomerServiceLine.repLogsOn(tree, 48000, "reginald");
+		CustomerServiceLine.repLogsOn(tree, 50000, "dingus");
 	}
 
 

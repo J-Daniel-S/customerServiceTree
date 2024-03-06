@@ -32,7 +32,7 @@ public class Supervisor {
 		};
 
 		supervisor.schedule(sternlyEye, 3, TimeUnit.SECONDS);
-		supervisor.schedule(goHome, 3, TimeUnit.MINUTES);
+		supervisor.schedule(goHome, 10, TimeUnit.MINUTES);
 	}
 	
 	// add eye angrilly as a method that increases the frequency of call pickup
