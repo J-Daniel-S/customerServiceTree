@@ -1,17 +1,17 @@
 package main;
 
-import main.phonelines.CustomerServiceLine;
 import main.queue.AVLTree;
+import main.supervisor.Supervisor;
 
 public class Main {
 	
 	public static void main(String[] args) {
 		AVLTree tree = new AVLTree();
 		
-		System.out.println("CUSTOMER SERVICE LINES OPEN");
-		CustomerServiceLine.moreCallers(tree);
-		CustomerServiceLine.executeDailySchedule(tree);
-
+		Supervisor.openSchedule(tree);
+		Supervisor.openLines(tree);
+		Supervisor.manageStaff(tree);
+		
 	}
 
 }

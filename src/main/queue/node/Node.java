@@ -1,7 +1,9 @@
 package main.queue.node;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Node {
 	
+	private static AtomicLong idGenerator = new AtomicLong(System.nanoTime());
 	private int key, height;
 	private Node right, left;
 	private long id;
@@ -9,14 +11,18 @@ public class Node {
 	public Node(int data) {
 		key = data;
 		left = right = null;
-		id = 0;
+		id = nextId();
 	}
 	
 	public Node(Node node) {
 		key = node.getKey();
 		left = node.getLeft();
 		right = node.getRight();
-		id = 0;
+		id = nextId();
+	}
+	
+	private synchronized long nextId() {
+		return idGenerator.incrementAndGet();
 	}
 
 	public int getKey() {

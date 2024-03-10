@@ -2,6 +2,9 @@ package main.queue;
 
 import static java.lang.Math.max;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import main.queue.map.IDMap;
 import main.queue.node.Node;
 
@@ -9,10 +12,23 @@ public class AVLTree extends BSTRecursive {
 
 	// holds customers by customer id
 	private IDMap customers;
+	private Lock lock;
+	
 
 	public AVLTree() {
 		super();
 		this.customers = new IDMap();
+		this.lock = new ReentrantLock();
+	}
+	
+	@Override
+	public Node getRoot() {
+		acquireLock();
+		try {
+			return super.getRoot();
+		} finally {
+			releaseLock();
+		}
 	}
 
 	private int height(Node node) {
@@ -29,10 +45,24 @@ public class AVLTree extends BSTRecursive {
 		return height(node.getRight()) - height(node.getLeft());
 	}
 	
+	private void acquireLock() {
+		lock.lock();
+	}
+	
+	private void releaseLock() {
+		lock.unlock();
+	}
+	
 	@Override
-	public synchronized void insert(int key) {
-		setRoot(insertNode(key, super.getRoot()));
-		customers.register(getRoot());
+	public void insert(int key) {
+		acquireLock();
+		try {
+			setRoot(insertNode(key, super.getRoot()));
+			customers.register(getRoot());
+		} finally {
+//			super.printinOrder();
+			releaseLock();
+		}
 	}
 
 	@Override
@@ -41,8 +71,18 @@ public class AVLTree extends BSTRecursive {
 		node = super.insertNode(key, node);
 
 		updateHeight(node);
-
+//		System.out.println("New node id - " + node.getId() + " - position - " + node.getKey());
 		return rebalance(node);
+	}
+	
+	@Override
+	public void delete(int key) {
+		acquireLock();
+		try {
+			super.delete(key);
+		} finally {
+			releaseLock();
+		}
 	}
 
 	@Override
@@ -85,7 +125,7 @@ public class AVLTree extends BSTRecursive {
 				node = rotateLeft(node);
 			}
 		}
-
+		
 		return node;
 	}
 
@@ -114,7 +154,7 @@ public class AVLTree extends BSTRecursive {
 	}
 
 	public Node find(long id) {
-		return customers.get(id);
+		return customers.find(id);
 	}
 
 	public IDMap getCustomers() {

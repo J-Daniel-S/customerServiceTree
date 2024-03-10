@@ -24,7 +24,7 @@ public abstract class BSTRecursive {
 		return node  == null || root == null ? 0 : node.getKey();
 	}
 	
-	public synchronized Node getRoot() {
+	public Node getRoot() {
 		return root;
 	}
 	
@@ -84,11 +84,11 @@ public abstract class BSTRecursive {
 		} else {
 			 throw new IllegalArgumentException("BST already contains a node with key " + key);
 		}
-
+		
 		return node;
 	}
 
-	public synchronized void delete(int key) {
+	public void delete(int key) {
 		root = deleteNode(key, root);
 	}
 
@@ -153,10 +153,23 @@ public abstract class BSTRecursive {
 	private void inOrderRecursive(Node root) {
 		if (root != null) {
 			inOrderRecursive(root.getLeft());
-			System.out.println("customer" + root.getKey() + (root == this.root ? "root" : " "));
+			System.out.println("customer" + root.getKey() + (root == this.root ? " - root - " : " - " ) + root.getId());
 			inOrderRecursive(root.getRight());
 		}
 		
 	}
 
+	// inorder traversal of BST
+	public int totalNodes() {
+		return totalNodes(root);
+	}
+	
+	private int totalNodes(Node root) {
+		if (root == null)
+			return 0;
+		return 1 + totalNodes(root.getLeft()) + totalNodes(root.getRight());
+		
+	}
+
 }
+
