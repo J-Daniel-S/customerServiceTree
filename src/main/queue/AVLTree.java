@@ -11,13 +11,13 @@ import main.queue.node.Node;
 public class AVLTree extends BSTRecursive {
 
 	// holds customers by customer id
-	private IDMap customers;
+//	private IDMap customers;
 	private Lock lock;
 	
 
 	public AVLTree() {
 		super();
-		this.customers = new IDMap();
+//		this.customers = new IDMap();
 		this.lock = new ReentrantLock();
 	}
 	
@@ -58,7 +58,7 @@ public class AVLTree extends BSTRecursive {
 		acquireLock();
 		try {
 			setRoot(insertNode(key, super.getRoot()));
-			customers.register(getRoot());
+//			customers.register(getRoot());
 		} finally {
 //			super.printinOrder();
 			releaseLock();
@@ -153,12 +153,12 @@ public class AVLTree extends BSTRecursive {
 		return rightChild;
 	}
 
-	public Node find(long id) {
-		return customers.find(id);
-	}
-
-	public IDMap getCustomers() {
-		return customers;
-	}
+//	public Node find(long id) {
+//		return customers.find(id);
+//	}
+//
+//	public IDMap getCustomers() {
+//		return customers;
+//	}
 	
 }

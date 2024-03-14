@@ -5,19 +5,27 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import main.queue.AVLTree;
+import main.queue.map.IDMap;
 import main.queue.node.Node;
 
 public class CustomerServiceLine {
 
+	public static final IDMap customers = new IDMap();
 	private static boolean left = true;
 	private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 	private static final Lock answerLock = new ReentrantLock();
+	private static AtomicLong idGenerator = new AtomicLong(System.nanoTime());
 
-	private CustomerServiceLine() {
+	private CustomerServiceLine() {}
+	
+	
+	private synchronized static long nextId() {
+		return idGenerator.incrementAndGet();
 	}
 	
 	private static void acquireLock() {
@@ -30,17 +38,19 @@ public class CustomerServiceLine {
 
 	public static void answer(AVLTree tree, String name) {
 		acquireLock();
+		// TODO assign id number when customers are answered, makes more sense this way anyway
 		try {
 			if (tree.getRoot() != null) {
 				
 				Node node = tree.getRoot();
 				tree.delete(node.getKey());
-				long callerId = node.getId();
+				node.setId(nextId());
+				customers.register(node);
 				
 				if (tree.getRoot() != null)
-					System.out.println("-\n" + name.toUpperCase() + " answers customer in position " + node.getKey() + " - ID - " + callerId + "\n-");
+					System.out.println("-\n" + name.toUpperCase() + " answers customer in position " + node.getKey() + " - ID - " + node.getId() + "\n-");
 				else
-					System.out.println("-\n" + name + " has answered customer" + callerId + "\n-");
+					System.out.println("-\n" + name + " has answered customer" + node.getId() + "\n-");
 			} else {
 				System.out.println("-\nNo customers in queue - " + name + " standing by for callers\n-");
 			}
@@ -62,8 +72,8 @@ public class CustomerServiceLine {
 
 		ScheduledFuture<?> future = executor.scheduleAtFixedRate(task, 1, ThreadLocalRandom.current().nextInt(8, 17), TimeUnit.SECONDS);
 
-		System.out.println("----------------------------------------" + name
-				+ "'s shift started----------------------------------------");
+		System.out.println("------------------------" + name
+				+ "'s shift started------------------------");
 		return future;
 	}
 
@@ -84,10 +94,14 @@ public class CustomerServiceLine {
 		Runnable newCaller = () -> {
 			int key = CustomerServiceLine.callerPosition(tree);
 			tree.insert(key);
-			System.out.println("New customer calling in - assigning id");
+			System.out.println("New customer calling in");
 		};
 		
 		executor.schedule(newCaller, ThreadLocalRandom.current().nextLong(5, 18), TimeUnit.SECONDS);
+	}
+	
+	public static void stopCallers() {
+		
 	}
 
 }

@@ -11,19 +11,16 @@ public class Node {
 	public Node(int data) {
 		key = data;
 		left = right = null;
-		id = nextId();
+		id = 0;
 	}
 	
 	public Node(Node node) {
 		key = node.getKey();
 		left = node.getLeft();
 		right = node.getRight();
-		id = nextId();
+		id = 0;
 	}
-	
-	private synchronized long nextId() {
-		return idGenerator.incrementAndGet();
-	}
+
 
 	public int getKey() {
 		return key;
