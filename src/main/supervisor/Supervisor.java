@@ -37,7 +37,7 @@ public class Supervisor {
 
 		Runnable newCaller = () -> {
 
-			if (ThreadLocalRandom.current().nextInt(1, 75) <= 1 && !stop) {
+			if (ThreadLocalRandom.current().nextInt(1, 100) == 1 && !stop) {
 				stop = true;
 			}
 
