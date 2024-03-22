@@ -37,15 +37,13 @@ public class Supervisor {
 
 		Runnable newCaller = () -> {
 
-			if (ThreadLocalRandom.current().nextInt(1, 100) == 1 && !stop) {
-				stop = true;
+			if (ThreadLocalRandom.current().nextInt(1, 100) == 1) {
+				stop = !stop;
 			}
 
-			if (!stop) {
-				if (ThreadLocalRandom.current().nextInt(20) < 6) {
-					CustomerServiceLine.newCaller(tree);
-					TIMER = 0;
-				}
+			if (!stop && ThreadLocalRandom.current().nextInt(20) < 6) {
+				CustomerServiceLine.newCaller(tree);
+				zeroTimer();
 			}
 
 		};
@@ -76,9 +74,13 @@ public class Supervisor {
 		int load = tree.totalNodes();
 
 		if (load > 5) {
-			System.out.println(
-					"-\n-Assessing lines - " + tree.totalNodes() + " callers-\n-Assigning new rep to answer calls-");
-			addRep(tree);
+			if (repNames.isEmpty()) {
+				System.out.println("-\n-The lines are loaded-\n---I've run out of employees to call in!!--");
+			} else {
+				System.out.println("-\n-Assessing lines - " + tree.totalNodes()
+						+ " callers-\n-Assigning new rep to answer calls-");
+				addRep(tree);
+			}
 		} else if (load <= 3) {
 			if (reps.size() > 1) {
 				System.out.println("-Lines are lightening up-");
@@ -108,6 +110,10 @@ public class Supervisor {
 		if (TIMER > 10) {
 			closeLines(tree);
 		}
+	}
+
+	public static void zeroTimer() {
+		TIMER = 0;
 	}
 
 }

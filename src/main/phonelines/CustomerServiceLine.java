@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import main.queue.AVLTree;
 import main.queue.map.IDMap;
 import main.queue.node.Node;
+import main.supervisor.Supervisor;
 
 public class CustomerServiceLine {
 
@@ -38,7 +39,6 @@ public class CustomerServiceLine {
 
 	public static void answer(AVLTree tree, String name) {
 		acquireLock();
-		// TODO assign id number when customers are answered, makes more sense this way anyway
 		try {
 			if (tree.getRoot() != null) {
 				
@@ -47,8 +47,10 @@ public class CustomerServiceLine {
 				node.setId(nextId());
 				customers.register(node);
 				
-				if (tree.getRoot() != null)
+				if (tree.getRoot() != null) {
 					System.out.println("-\n" + name.toUpperCase() + " answers customer in position " + node.getKey() + " - ID - " + node.getId() + "\n-");
+					Supervisor.zeroTimer();
+				}
 				else
 					System.out.println("-\n" + name + " has answered customer" + node.getId() + "\n-");
 			} else {
@@ -100,8 +102,10 @@ public class CustomerServiceLine {
 		executor.schedule(newCaller, ThreadLocalRandom.current().nextLong(5, 18), TimeUnit.SECONDS);
 	}
 	
-	public static void stopCallers() {
-		
+	public static void addCaller(AVLTree tree) {
+		int key = CustomerServiceLine.callerPosition(tree);
+		tree.insert(key);
+		System.out.println("New chaotic customer calling in!");
 	}
 
 }
